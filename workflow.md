@@ -176,22 +176,3 @@ Residential report filters, in order:
 Written by `update_transform_log()` (append mode, header created on first write):
 
 `name, action, script_name, num_of_cols, num_of_rows, feature_names, execution_time, destination`
-
----
-
-## 6. Issues Spotted While Mapping
-
-These affect correctness or traceability. Worth reviewing before relying on the final outputs.
-
-1. **Likely inverted filter in Week 4 (most important).** `sold_final = sold[sold[flag_cols].any(axis=1)]` *keeps* rows that have at least one flag and discards the clean rows. It probably should be `sold[~sold[flag_cols].any(axis=1)]` (same for listings).
-2. **Remaining audit columns in final output.** `Invalid_*` and `HasInvalidNumeric` columns don't contain the lowercase string `flag`, so they are not removed with the flag columns and stay in `*_final.csv`.
-3. **No-op null handling in Week 4.** `sold_df.dropna(axis=1, how='all')`, `dropna(axis=0, how='all')` and the listings equivalents are never assigned back, so they change nothing.
-4. **Extra index column.** Week 3 and Week 4 call `to_csv()` without `index=False`, producing `Unnamed: 0`. Week 4 then has to drop it manually, but `sold_stage.csv` / `listings_stage.csv` are saved with the index again.
-5. **Log destinations that don't match actual files.**
-   - Week 1 residential entries list `raw_data_sold.csv` / `raw_data_listing.csv` as the destination instead of `raw_residential_*.csv`.
-   - Week 2's first log call writes `cleaned_raw_*` as the destination before that file exists.
-   - Week 4 logs "Remove invalid numeric values" with the stage path before the stage file is written.
-6. **Hard-coded Windows paths.** Week 2 uses `week_2_final_deliverables\...` backslash paths for `savefig` (the folder is only created by `numeric_summary_plots` and the residential report, after the null-distribution plots are saved), which fails on macOS/Linux or if the folder doesn't exist yet.
-7. **Residential branches are dead ends.** `raw_residential_*.csv` and `residential_*.csv` aren't read by Week 3 or Week 4, so the final datasets still contain all property types.
-8. **Unused constants in `w2_utils.py`.** `LISTINGS_PATH` and `SOLD_PATH` are defined but never used (paths are passed into `eda_run`).
-9. **Null % denominator.** Week 2 divides null counts by the row count of the *unfiltered* raw frames (`df_listing.shape[0]`). That's fine here since rows aren't dropped, but it would silently be wrong if row filtering were added before that step.
