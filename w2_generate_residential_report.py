@@ -167,8 +167,8 @@ def process(name: str, path: str, require_close_price: bool) -> None:
     out.to_csv(out_path, index=False)
     update_transform_log(df = out, name = df_name, action = f'Residential Only Data & Drop Columns with 90%+ Null from {name}', destination = out_path)
 
-    nulls_after.to_csv(os.path.join(OUTPUT_DIR, f"{name}_null_summary.csv"))
-    num.to_csv(os.path.join(OUTPUT_DIR, f"{name}_numeric_summary.csv"))
+    nulls_after.to_csv(os.path.join(OUTPUT_DIR, f"{name}_null_summary.csv"),index=False)
+    num.to_csv(os.path.join(OUTPUT_DIR, f"{name}_numeric_summary.csv"),index=False)
     rep(f"\n[6] SAVED: {out_path}  ({len(out):,} rows x {out.shape[1]} columns)")
     rep.save(os.path.join(OUTPUT_DIR, f"{name}_report.txt"))
 

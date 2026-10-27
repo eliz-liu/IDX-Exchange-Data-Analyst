@@ -59,8 +59,8 @@ print(
 
 sold_target_path = r'sold_mortgage_enriched.csv'
 listings_target_path = r'listings_mortgage_enriched.csv'
-sold_with_rates.to_csv(sold_target_path)
-listings_with_rates.to_csv(listings_target_path)
+sold_with_rates.to_csv(sold_target_path,index=False)
+listings_with_rates.to_csv(listings_target_path,index=False)
 print('Saved Enriched Data')
 
 update_transform_log(df = sold_with_rates, name = 'sold data', action = 'cleaned_raw_sold_data enriched with mortgage rates', destination = sold_target_path)

@@ -160,8 +160,8 @@ def add_geo_flags(df, state_bounds=STATE_BOUNDS, default_bounds=DEFAULT_BOUNDS):
 listings = add_geo_flags(listings)
 sold = add_geo_flags(sold)
 
-listings.to_csv(listings_flags_path)
-sold.to_csv(sold_flags_path)
+listings.to_csv(listings_flags_path,index=False)
+sold.to_csv(sold_flags_path,index=False)
 
 update_transform_log(df = sold, name = 'sold data', action = 'add_geo_flags', destination = sold_flags_path)
 update_transform_log(df = listings, name = 'listing data', action = 'add_geo_flags', destination = listings_flags_path)
@@ -185,8 +185,8 @@ sold_flag_cols = sold.columns[sold.columns.str.contains('flag')].tolist()
 listings_flag_cols = listings.columns[listings.columns.str.contains('flag')].tolist()
 
 
-sold_final = sold[sold[sold_flag_cols].any(axis=1)]
-listings_final = listings[listings[listings_flag_cols].any(axis=1)]
+sold_final = sold[~sold[sold_flag_cols].any(axis=1)]
+listings_final = listings[~listings[listings_flag_cols].any(axis=1)]
 
 print(len(sold_final),len(listings_final))
 
